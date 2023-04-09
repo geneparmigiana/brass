@@ -13,7 +13,7 @@ from app.api import deps
 from app.core.config import settings
 
 
-router = APIRouter()
+user_router = APIRouter()
 
 
 @router.get("/", response_model=List[UserSchema])

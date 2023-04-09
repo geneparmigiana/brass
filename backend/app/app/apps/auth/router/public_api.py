@@ -19,7 +19,7 @@ from app.apps.user.models import User
 from app.apps.comms.services import generate_password_reset_token,send_reset_password_email,verify_password_reset_token
 
 
-router = APIRouter()
+auth_router = APIRouter()
 
 
 @router.post("/login/access-token", response_model=AuthToken)
