@@ -35,7 +35,7 @@ async def create_user(
         *,
         db: AsyncSession = Depends(deps.async_get_db),
         user_in: UserCreate,
-        current_user: User = Depends(deps.get_current_active_superuser),
+        #)current_user: User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     Create new user.

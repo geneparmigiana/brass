@@ -41,14 +41,14 @@ deploy-stag:
   stage: deploy
   script: 
     - >
-      DOMAIN=stag.test-template.com
-      TRAEFIK_TAG=stag.test-template.com
-      STACK_NAME=stag-test-template-com
+      DOMAIN=stag.brass.com
+      TRAEFIK_TAG=stag.brass.com
+      STACK_NAME=stag-brass-com
       TAG=stag
       sh ./scripts/deploy.sh
   environment:
     name: staging
-    url: https://stag.test-template.com
+    url: https://stag.brass.com
   only:
     - master
   tags:
@@ -59,14 +59,14 @@ deploy-prod:
   stage: deploy
   script:
     - >
-      DOMAIN=test-template.com
-      TRAEFIK_TAG=test-template.com
-      STACK_NAME=test-template-com
+      DOMAIN=brass.com
+      TRAEFIK_TAG=brass.com
+      STACK_NAME=brass-com
       TAG=prod
       sh ./scripts/deploy.sh
   environment:
     name: production
-    url: https://test-template.com
+    url: https://brass.com
   only:
     - production
   tags:

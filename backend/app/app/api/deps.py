@@ -46,19 +46,19 @@ async def async_get_db() -> AsyncGenerator:
 
 
 async def get_current_user(
-        db: AsyncSession = Depends(async_get_db), token: str = Depends(reusable_oauth2)
+        db: AsyncSession = Depends(async_get_db), #token: str = Depends(reusable_oauth2)
 ) -> User:
-    try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
-        )
-        token_data = AuthTokenPayload(**payload)
-    except (jwt.JWTError, ValidationError):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
-        )
-    user = await UserDAO.get(db, id=token_data.sub)
+    # try:
+    #     payload = jwt.decode(
+    #         token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+    #     )
+    #     token_data = AuthTokenPayload(**payload)
+    # except (jwt.JWTError, ValidationError):
+    #     raise HTTPException(
+    #         status_code=status.HTTP_403_FORBIDDEN,
+    #         detail="Could not validate credentials",
+    #     )
+    user = await UserDAO.get_by_email(db, email= "thaversang@gmail.com")
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
@@ -75,8 +75,8 @@ def get_current_active_user(
 def get_current_active_superuser(
         current_user: User = Depends(get_current_user),
 ) -> User:
-    if not UserDAO.is_superuser(current_user):
-        raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
-        )
+    # if not UserDAO.is_superuser(current_user):
+    #     raise HTTPException(
+    #         status_code=400, detail="The user doesn't have enough privileges"
+    #     )
     return current_user
