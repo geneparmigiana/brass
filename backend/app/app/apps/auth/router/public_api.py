@@ -6,20 +6,19 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app import crud, models, schemas
+from app import models
 from app.apps.auth.schemas  import AuthToken
 from app.apps.comms.schemas import Msg
 from app.apps.user.schemas import UserCreate,UserUpdate,UserSchema
+from app.apps.user.dao import UserDAO
+from app.apps.user.models import User
 from app.api import deps
 from app.core import security
 from app.core.config import settings
 from app.core.security import get_password_hash
 from app.apps.user.models import User
-from app.utils.email import (
-    generate_password_reset_token,
-    send_reset_password_email,
-    verify_password_reset_token,
-)
+from app.apps.comms.services import generate_password_reset_token,send_reset_password_email,verify_password_reset_token
+
 
 router = APIRouter()
 
@@ -31,12 +30,12 @@ async def login_access_token(
     """
     OAuth2 compatible token login, get an access token for future requests
     """
-    user = await crud.user.authenticate(
+    user = await UserDAO.authenticate(
         db, email=form_data.username, password=form_data.password
     )
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
-    elif not crud.user.is_active(user):
+    elif not UserDAO.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     return {
@@ -48,7 +47,7 @@ async def login_access_token(
 
 
 @router.post("/login/test-token", response_model=UserSchema)
-def test_token(current_user: models.User = Depends(deps.get_current_user)) -> Any:
+def test_token(current_user: User = Depends(deps.get_current_user)) -> Any:
     """
     Test access token
     """
@@ -60,7 +59,7 @@ async def recover_password(email: str, db: AsyncSession = Depends(deps.async_get
     """
     Password Recovery
     """
-    user = await crud.user.get_by_email(db, email=email)
+    user = await UserDAO.get_by_email(db, email=email)
 
     if not user:
         raise HTTPException(
@@ -86,13 +85,13 @@ async def reset_password(
     email = verify_password_reset_token(token)
     if not email:
         raise HTTPException(status_code=400, detail="Invalid token")
-    user = await crud.user.get_by_email(db, email=email)
+    user = await UserDAO.get_by_email(db, email=email)
     if not user:
         raise HTTPException(
             status_code=404,
             detail="The user with this username does not exist in the system.",
         )
-    elif not crud.user.is_active(user):
+    elif not UserDAO.is_active(user):
         raise HTTPException(status_code=400, detail="Inactive user")
     hashed_password = get_password_hash(new_password)
     user.hashed_password = hashed_password

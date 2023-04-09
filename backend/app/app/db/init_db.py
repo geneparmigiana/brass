@@ -1,8 +1,9 @@
 #from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app import crud, schemas
 from app.core.config import settings
+from app.apps.user.schemas import UserCreate
+from app.apps.user.dao import UserDAO
 from app.db import base  # noqa: F401
 
 # make sure all SQL Alchemy models are imported (app.db.base) before initializing DB
@@ -22,15 +23,15 @@ async def init_db(db: AsyncSession) -> None:
     # so you need to create a user with a password, then update the user
     # with the hashed password
     # the code below does that
-    
 
-    user = await crud.user.get_by_email(db, email=settings.FIRST_SUPERUSER)
+
+    user = await UserDAO.get_by_email(db, email=settings.FIRST_SUPERUSER)
     if not user:
-        user_in = schemas.UserCreate(
+        user_in = UserCreate(
             email=settings.FIRST_SUPERUSER,
             password=settings.FIRST_SUPERUSER_PASSWORD,
             phone="88005553535",
             is_superuser=True,
         )
-        user = await crud.user.create(db, obj_in=user_in)  # noqa: F841
-        user = await crud.user.update(db, db_obj=user, obj_in={"is_active": True})  # noqa: F841
+        user = await UserDAO.create(db, obj_in=user_in)  # noqa: F841
+        user = await UserDAO.update(db, db_obj=user, obj_in={"is_active": True})  # noqa: F841
