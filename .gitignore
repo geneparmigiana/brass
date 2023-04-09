@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.vscode
+.mypy_cache
+docker-stack.yml
