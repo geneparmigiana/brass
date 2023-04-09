@@ -58,7 +58,7 @@ async def get_current_user(
     #         status_code=status.HTTP_403_FORBIDDEN,
     #         detail="Could not validate credentials",
     #     )
-    user = await UserDAO.get_by_email(db, email= "thaversang@gmail.com")
+    user = await UserDAO.get_by_email(db, email= "thaversang1@gmail.com")
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
