@@ -22,7 +22,7 @@ from app.apps.comms.services import generate_password_reset_token,send_reset_pas
 auth_router = APIRouter()
 
 
-@router.post("/login/access-token", response_model=AuthToken)
+@auth_router.post("/login/access-token", response_model=AuthToken)
 async def login_access_token(
         db: AsyncSession = Depends(deps.async_get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ) -> Any:
@@ -45,7 +45,7 @@ async def login_access_token(
     }
 
 
-@router.post("/login/test-token", response_model=UserSchema)
+@auth_router.post("/login/test-token", response_model=UserSchema)
 def test_token(current_user: User = Depends(deps.get_current_user)) -> Any:
     """
     Test access token
@@ -53,7 +53,7 @@ def test_token(current_user: User = Depends(deps.get_current_user)) -> Any:
     return current_user
 
 
-@router.post("/password-recovery/{email}", response_model=Msg)
+@auth_router.post("/password-recovery/{email}", response_model=Msg)
 async def recover_password(email: str, db: AsyncSession = Depends(deps.async_get_db)) -> Any:
     """
     Password Recovery
@@ -72,7 +72,7 @@ async def recover_password(email: str, db: AsyncSession = Depends(deps.async_get
     return {"msg": "Password recovery email sent"}
 
 
-@router.post("/reset-password/", response_model=Msg)
+@auth_router.post("/reset-password/", response_model=Msg)
 async def reset_password(
         token: str = Body(...),
         new_password: str = Body(...),

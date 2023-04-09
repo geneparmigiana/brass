@@ -16,7 +16,7 @@ from app.core.config import settings
 user_router = APIRouter()
 
 
-@router.get("/", response_model=List[UserSchema])
+@user_router.get("/", response_model=List[UserSchema])
 async def read_users(
         db: AsyncSession = Depends(deps.async_get_db),
         skip: int = 0,
@@ -30,7 +30,7 @@ async def read_users(
     return users
 
 
-@router.post("/", response_model=UserSchema)
+@user_router.post("/", response_model=UserSchema)
 async def create_user(
         *,
         db: AsyncSession = Depends(deps.async_get_db),
@@ -54,7 +54,7 @@ async def create_user(
     return user
 
 
-@router.put("/me", response_model=UserSchema)
+@user_router.put("/me", response_model=UserSchema)
 async def update_user_me(
         *,
         db: AsyncSession = Depends(deps.async_get_db),
@@ -78,7 +78,7 @@ async def update_user_me(
     return user
 
 
-@router.get("/me", response_model=UserSchema)
+@user_router.get("/me", response_model=UserSchema)
 async def read_user_me(
         db: AsyncSession = Depends(deps.async_get_db),
         current_user: User = Depends(deps.get_current_active_user),
@@ -89,7 +89,7 @@ async def read_user_me(
     return current_user
 
 
-@router.post("/open", response_model=UserSchema)
+@user_router.post("/open", response_model=UserSchema)
 async def create_user_open(
         *,
         db: AsyncSession = Depends(deps.async_get_db),
@@ -116,7 +116,7 @@ async def create_user_open(
     return user
 
 
-@router.get("/{user_id}", response_model=UserSchema)
+@user_router.get("/{user_id}", response_model=UserSchema)
 async def read_user_by_id(
         user_id: int,
         current_user: User = Depends(deps.get_current_active_user),
@@ -135,7 +135,7 @@ async def read_user_by_id(
     return user
 
 
-@router.put("/{user_id}", response_model=UserSchema)
+@user_router.put("/{user_id}", response_model=UserSchema)
 async def update_user(
         *,
         db: AsyncSession = Depends(deps.async_get_db),
@@ -156,7 +156,7 @@ async def update_user(
     return user
 
 
-@router.delete("/{id}", response_model=UserSchema)
+@user_router.delete("/{id}", response_model=UserSchema)
 async def delete_user(
         *,
         db: AsyncSession = Depends(deps.async_get_db),
